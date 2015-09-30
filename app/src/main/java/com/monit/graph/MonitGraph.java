@@ -1,60 +1,84 @@
 package com.monit.graph;
 
-import android.content.Context;
 import android.graphics.Color;
+import android.graphics.Typeface;
 
+import com.github.mikephil.charting.charts.LineChart;
+import com.github.mikephil.charting.data.Entry;
+import com.github.mikephil.charting.data.LineData;
+import com.github.mikephil.charting.data.LineDataSet;
+import com.monit.MonitActivity;
+import com.monit.R;
 import com.monit.coordinate.Coordinate;
 
-import org.achartengine.ChartFactory;
-import org.achartengine.GraphicalView;
-import org.achartengine.chart.PointStyle;
-import org.achartengine.model.XYMultipleSeriesDataset;
-import org.achartengine.model.XYSeries;
-import org.achartengine.renderer.XYMultipleSeriesRenderer;
-import org.achartengine.renderer.XYSeriesRenderer;
-
+import java.util.ArrayList;
 import java.util.List;
 
 public class MonitGraph {
 
-    private XYSeries series;
-    private Context context;
+    public static final int LINE_WIDTH = 4;
+    public static final float CUBIC_INTENSITY = 0.2f;
+    private MonitActivity monitActivity;
     private List<Coordinate> coordinates;
+    private List<Entry> entries;
+    private LineChart lineChart;
+    private LineDataSet lineDataSet;
+    private LineData lineData;
 
-    public MonitGraph(Context context, String name, List<Coordinate> coordinates){
-        this.context = context;
+    public MonitGraph(MonitActivity monitActivity, List<Coordinate> coordinates){
+        this.monitActivity = monitActivity;
         this.coordinates = coordinates;
-        series = new XYSeries(name);
     }
 
-    public GraphicalView getGraph() {
+    public void show() {
+        lineChart = (LineChart) monitActivity.findViewById(R.id.chart);
+        lineChart.getXAxis().setDrawLabels(false);
 
-        for(int i =0;i < coordinates.size() ; i++){
-            series.add(coordinates.get(i).x, coordinates.get(i).y);
+        entries = parseDataToEntry(coordinates);
+
+        lineDataSet = new LineDataSet(entries,"number of views");
+        lineDataSet.setDrawCircles(false);
+        lineDataSet.setColor(Color.BLUE);
+        lineDataSet.setCubicIntensity(CUBIC_INTENSITY);
+        lineDataSet.setLineWidth(LINE_WIDTH);
+        //lineDataSet.setDrawCubic(true);
+
+        lineData = new LineData(getYAxis(),lineDataSet);
+        lineChart.setData(lineData);
+        //lineChart.setDescription("Number of views");
+
+    }
+
+    private List<String> getYAxis() {
+        List<String> numbers = new ArrayList<>();
+        for (int i = 0; i < coordinates.size(); i++){
+            numbers.add(i+"");
         }
+        return numbers;
+    }
 
-        XYMultipleSeriesDataset dataset = new XYMultipleSeriesDataset();
-        dataset.addSeries(series);
+    private List<Entry> parseDataToEntry(List<Coordinate> coordinates) {
+        List<Entry> dataEntries = new ArrayList<>();
+        for (int i = 0; i < coordinates.size(); i++){
+            Coordinate coordinate = coordinates.get(i);
+            float x = coordinate.x.floatValue();
 
-        XYSeriesRenderer renderer = new XYSeriesRenderer();
-        renderer.setLineWidth(2);
-        renderer.setColor(Color.BLUE);
-        renderer.setPointStyle(PointStyle.SQUARE);
-        renderer.setFillPoints(true);
-        //renderer.setDisplayBoundingPoints(true);
-        //renderer.setPointStrokeWidth(3);
+            dataEntries.add( new Entry(x,i) );
+        }
+        return dataEntries;
+    }
 
-        XYMultipleSeriesRenderer multipleRenderer = new XYMultipleSeriesRenderer();
-        multipleRenderer.addSeriesRenderer(renderer);
+    public void refresh(List<Coordinate> data) {
+        lineDataSet.clear();
 
-        multipleRenderer.setZoomButtonsVisible(true);
-        multipleRenderer.setMarginsColor(Color.argb(0x00, 0xff, 0x00, 0x00));
-        multipleRenderer.setYLabels(10);
-        multipleRenderer.setXLabels(5);
-        multipleRenderer.setPanEnabled(false, false);
-        multipleRenderer.setChartTitle("Graphite test");
-        multipleRenderer.setShowGrid(true); // we show the grid
+        entries = parseDataToEntry(data);
 
-        return ChartFactory.getLineChartView(context, dataset, multipleRenderer);
+        for (int i = 0; i < data.size(); i++){
+            lineDataSet.addEntry(entries.get(i));
+        }
+        lineData = new LineData(getYAxis(),lineDataSet);
+        lineChart.setData(lineData);
+        lineChart.notifyDataSetChanged();
+        lineChart.invalidate();
     }
 }

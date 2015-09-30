@@ -9,7 +9,8 @@ import org.apache.http.util.EntityUtils;
 
 public class JSONRest{
 
-    private final static String ENDPOINT = "http://10.129.187.163/render?target=stats.teste&format=json&from=-3min";
+    //private final static String ENDPOINT = "http://172.16.29.103/render?target=summarize(stats.teste,'2min','avg')&format=json&from=-20min";
+    private final static String ENDPOINT = "http://10.129.187.163/render?target=summarize(stats.teste,'2min','avg')&format=json&from=-20min";
 
     public String getJson() {
         HttpClient httpclient = new DefaultHttpClient();

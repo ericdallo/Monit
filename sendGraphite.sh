@@ -13,8 +13,6 @@
 # Loop forever
  while :
  do
- # Get epoch
- DATE=`date +%s`
  
 # Collect some random data for
  # this example
@@ -22,7 +20,7 @@
  
 # Send data to Graphite
 echo $MY_DATA
-echo -n "teste:${MY_DATA}${DATE}|c" | nc -w 1 -u localhost 8125
+echo -n "teste:${MY_DATA}|c" | nc -w 1 -u localhost 8125
 #echo -n "teste:$(((RANDOM % 100)+1))|c" | nc -w 1 -u localhost 8125
  
 sleep 1

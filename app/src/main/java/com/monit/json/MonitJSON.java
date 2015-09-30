@@ -18,11 +18,12 @@ public class MonitJSON extends AsyncTask<Void,Void,Void> {
     private static final String DATAPOINTS = "datapoints";
     private List<Coordinate> data;
     private MonitActivity monitActivity;
+    private boolean refresh;
 
     public MonitJSON(MonitActivity monitActivity) {
         this.monitActivity = monitActivity;
         this.data = new ArrayList<>();
-        execute();
+        this.refresh = false;
     }
 
     @Override
@@ -55,6 +56,17 @@ public class MonitJSON extends AsyncTask<Void,Void,Void> {
     @Override
     protected void onPostExecute(Void aVoid) {
         super.onPostExecute(aVoid);
-        monitActivity.setGraph(this.data);
+        if (refresh){
+            monitActivity.refreshGraph(this.data);
+        }else {
+            monitActivity.setGraph(this.data);
+        }
+
+    }
+
+    public void refreshData() {
+        this.data = new ArrayList<>();
+        this.refresh = true;
+        execute();
     }
 }
