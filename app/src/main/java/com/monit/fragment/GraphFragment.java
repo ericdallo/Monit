@@ -2,13 +2,13 @@ package com.monit.fragment;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.text.InputType;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.EditText;
 
 import com.monit.R;
@@ -21,7 +21,7 @@ import java.util.List;
 public class GraphFragment extends Fragment {
 
     private MonitGraph monitGraph;
-    private Button btUpdate, btUrl;
+    private FloatingActionButton btUpdate, btUrl;
     private JsonRest jsonRest;
 
     @Nullable
@@ -32,13 +32,13 @@ public class GraphFragment extends Fragment {
         jsonRest = new JsonRest(this, false);
         jsonRest.execute();
 
-        btUpdate = (Button) view.findViewById(R.id.bt_update);
+        btUpdate = (FloatingActionButton) view.findViewById(R.id.bt_update);
         btUpdate.setOnClickListener(v -> {
             jsonRest = new JsonRest(this, true);
             jsonRest.execute();
         });
 
-        btUrl = (Button) view.findViewById(R.id.bt_url);
+        btUrl = (FloatingActionButton) view.findViewById(R.id.bt_url);
         btUrl.setOnClickListener(v -> askUrl());
 
         return view;

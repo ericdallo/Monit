@@ -1,5 +1,7 @@
 package com.monit;
 
+import android.content.Intent;
+import android.net.VpnService;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
@@ -11,9 +13,6 @@ import com.monit.adapter.MainMenuAdapter;
 
 public class MonitActivity extends AppCompatActivity {
 
-    private ViewPager viewPager;
-    private MainMenuAdapter adapter;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -22,8 +21,9 @@ public class MonitActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        adapter = new MainMenuAdapter(getSupportFragmentManager());
-        viewPager = (ViewPager) findViewById(R.id.view_pager);
+        MainMenuAdapter adapter = new MainMenuAdapter(getSupportFragmentManager());
+
+        ViewPager viewPager = (ViewPager) findViewById(R.id.view_pager);
         viewPager.setAdapter(adapter);
 
     }
@@ -38,9 +38,10 @@ public class MonitActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
 
-        if (id == R.id.update_monit) {
+        if(id == R.id.update_monit){
+            Intent vpnIntent = VpnService.prepare(this);
             return true;
         }
-        return super.onOptionsItemSelected(item);
+        return false;
     }
 }
