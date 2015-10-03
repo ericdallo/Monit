@@ -7,7 +7,7 @@
  HOSTNAME=`hostname --short`
  
 # Set Graphite host
- GRAPHITE=localhost
+ GRAPHITE=54.68.38.254
  GRAPHITE_PORT=8125
  
 # Loop forever
@@ -20,7 +20,7 @@
  
 # Send data to Graphite
 echo $MY_DATA
-echo -n "teste:${MY_DATA}|c" | nc -w 1 -u localhost 8125
+echo -n "teste:${MY_DATA}|c" | nc -w 1 -u $GRAPHITE $GRAPHITE_PORT
 #echo -n "teste:$(((RANDOM % 100)+1))|c" | nc -w 1 -u localhost 8125
  
 sleep 1
