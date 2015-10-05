@@ -19,7 +19,7 @@ public class CoordinateJson {
             if(datapoints.get(i).get(0) != null) {
                 doubleX  = Double.parseDouble(datapoints.get(i).get(0));
             }
-            Coordinate coordinate = new Coordinate(doubleX,new Long(i + 1));
+            Coordinate coordinate = new Coordinate(doubleX,new Long(i));
             coordinates.add(coordinate);
         }
         return coordinates;

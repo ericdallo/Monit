@@ -1,18 +1,66 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".MonitActivity">
 
-    <include
-        xmlns:android="http://schemas.android.com/apk/res/android"
+    <include xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/toolbar"
         layout="@layout/toolbar" />
 
     <android.support.v4.view.ViewPager
-        android:layout_below="@+id/toolbar"
         android:id="@+id/view_pager"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:layout_below="@+id/toolbar"
+        android:layout_marginTop="60dp" />
 
-</RelativeLayout>
+    <com.github.clans.fab.FloatingActionButton
+        android:id="@+id/bt_update"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|left"
+        android:layout_marginBottom="12dp"
+        android:layout_marginRight="12dp"
+        android:src="@drawable/fab_refresh"
+        app:fab_colorNormal="@color/ColorPrimary"
+        app:fab_colorPressed="@color/ColorPrimary"
+        app:fab_colorRipple="#99FFFFFF"
+        app:fab_hideAnimation="@anim/fab_scale_down"
+        app:fab_showAnimation="@anim/fab_scale_up"
+        app:fab_showShadow="true"
+        app:layout_behavior="com.monit.layoutsbehavior.FloatingActionButtonBehavior" />
+
+    <com.github.clans.fab.FloatingActionMenu
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|right"
+        android:layout_marginBottom="12dp"
+        android:layout_marginRight="12dp"
+        android:src="@drawable/fab_ic_add"
+        app:fab_colorNormal="@color/ColorPrimary"
+        app:fab_colorPressed="@color/ColorPrimary"
+        app:fab_colorRipple="#99FFFFFF"
+        app:fab_hideAnimation="@anim/fab_scale_down"
+        app:fab_showAnimation="@anim/fab_scale_up"
+        app:fab_showShadow="true"
+        app:layout_behavior="com.monit.layoutsbehavior.FloatingActionMenuBehavior">
+
+        <com.github.clans.fab.FloatingActionButton
+            android:id="@+id/bt_target"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:fab_label="Add url"
+            app:fab_size="mini" />
+
+        <com.github.clans.fab.FloatingActionButton
+            android:id="@+id/bt_url"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/fab_edit"
+            app:fab_label="Add url"
+            app:fab_size="mini" />
+    </com.github.clans.fab.FloatingActionMenu>
+
+</android.support.design.widget.CoordinatorLayout>

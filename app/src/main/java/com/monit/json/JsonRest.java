@@ -1,27 +1,28 @@
 package com.monit.json;
 
 import android.os.AsyncTask;
+import android.util.Log;
 
+import com.monit.R;
 import com.monit.api.ApiMethods;
+import com.monit.async.AsyncResponse;
+import com.monit.configuration.MonitConfig;
 import com.monit.coordinate.Coordinate;
-import com.monit.fragment.GraphFragment;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import retrofit.RestAdapter;
+import retrofit.RetrofitError;
 
 public class JsonRest extends AsyncTask<Void,Void,List<CoordinateJson>> {
 
-    private final static String API_URL = "http://54.68.38.254";
-    private final static String TARGET = "summarize(stats.teste,'1min','avg')";
-    private final static String FORMAT = "json";
-    private final static String FROM = "-30 min";
     private RestAdapter restAdapter;
     private boolean refresh;
-    private GraphFragment graphFragment;
+    private AsyncResponse delegate;
 
-    public JsonRest(GraphFragment graphFragment, boolean refresh) {
-        this.graphFragment = graphFragment;
+    public JsonRest(AsyncResponse delegate, boolean refresh) {
+        this.delegate = delegate;
         this.refresh = refresh;
     }
 
@@ -30,27 +31,36 @@ public class JsonRest extends AsyncTask<Void,Void,List<CoordinateJson>> {
 
         this.restAdapter = new RestAdapter.Builder()
                 .setLogLevel(RestAdapter.LogLevel.FULL)
-                .setEndpoint(API_URL)
+                .setEndpoint(MonitConfig.getBaseUrl())
                 .build();
     }
 
     @Override
     protected List<CoordinateJson> doInBackground(Void... params) {
         ApiMethods apiMethods = restAdapter.create(ApiMethods.class);
-        List<CoordinateJson> coordinateJsons =  apiMethods.getCoordinates(TARGET,FORMAT,FROM);
-        return coordinateJsons;
+        List<CoordinateJson> coordinates;
+        try{
+            coordinates = apiMethods.getCoordinates(
+                    MonitConfig.getTarget(),
+                    MonitConfig.getFormat(),
+                    MonitConfig.getFrom()
+            );
+        }catch (RetrofitError error){
+            Log.i(String.valueOf(R.string.error_label), String.valueOf(R.string.unknow_host));
+            delegate.showErrorMsg();
+            coordinates = new ArrayList<>();
+        }
+        return coordinates;
     }
 
     @Override
     protected void onPostExecute(List<CoordinateJson> coordinateJson) {
-
+        //TODO make a better validation
+        if (coordinateJson.size() == 0){
+            return;
+        }
         List<Coordinate> coordinates = coordinateJson.get(0).getData();
 
-        if (refresh){
-            graphFragment.refreshGraph(coordinates);
-        }else {
-            graphFragment.setGraph(coordinates);
-        }
-
+        delegate.processFinish(coordinates, refresh);
     }
 }

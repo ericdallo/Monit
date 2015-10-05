@@ -1,17 +1,14 @@
 package com.monit.graph;
 
 import android.graphics.Color;
-import android.graphics.Typeface;
 import android.view.View;
 
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
-import com.monit.MonitActivity;
 import com.monit.R;
 import com.monit.coordinate.Coordinate;
-import com.monit.fragment.GraphFragment;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -51,11 +48,11 @@ public class MonitGraph {
 
         //lineDataSet.setDrawCubic(true);
 
-        lineData = new LineData(getYAxis(),lineDataSet);
+        lineData = new LineData(getXAxis(),lineDataSet);
         lineChart.setData(lineData);
     }
 
-    private List<String> getYAxis() {
+    private List<String> getXAxis() {
         List<String> numbers = new ArrayList<>();
         for (int i = 0; i < coordinates.size(); i++){
             numbers.add(i+"");
@@ -69,20 +66,21 @@ public class MonitGraph {
             Coordinate coordinate = coordinates.get(i);
             float x = coordinate.x.floatValue();
 
-            dataEntries.add( new Entry(x,i + 1) );
+            dataEntries.add( new Entry(x,i) );
         }
         return dataEntries;
     }
 
     public void refresh(List<Coordinate> data) {
+        this.coordinates = data;
         lineDataSet.clear();
-
         entries = parseDataToEntry(data);
 
         for (int i = 0; i < data.size(); i++){
             lineDataSet.addEntry(entries.get(i));
         }
-        lineData = new LineData(getYAxis(),lineDataSet);
+        lineData = new LineData(getXAxis(),lineDataSet);
+
         lineChart.setData(lineData);
         lineChart.notifyDataSetChanged();
         lineChart.invalidate();

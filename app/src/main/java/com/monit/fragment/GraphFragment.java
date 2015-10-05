@@ -2,43 +2,56 @@ package com.monit.fragment;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.text.InputType;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.EditText;
 
+import com.github.clans.fab.FloatingActionButton;
 import com.monit.R;
+import com.monit.async.AsyncGraph;
+import com.monit.async.AsyncResponse;
+import com.monit.configuration.MonitConfig;
 import com.monit.coordinate.Coordinate;
 import com.monit.graph.MonitGraph;
 import com.monit.json.JsonRest;
 
 import java.util.List;
 
-public class GraphFragment extends Fragment {
+public class GraphFragment extends Fragment implements AsyncResponse {
 
+    public static final String HTTP_URL_INIT = "http://";
     private MonitGraph monitGraph;
-    private Button btUpdate, btUrl;
+    private FloatingActionButton btUpdate, btUrl;
     private JsonRest jsonRest;
+    private View parent;
+    private AsyncGraph asyncGraph;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.graph_fragment, container, false);
+        this.parent = ((View)container.getParent());
+        this.asyncGraph = new AsyncGraph(this);
 
         jsonRest = new JsonRest(this, false);
         jsonRest.execute();
 
-        btUpdate = (Button) view.findViewById(R.id.bt_update);
+        btUpdate = (FloatingActionButton) parent.findViewById(R.id.bt_update);
         btUpdate.setOnClickListener(v -> {
+            if(MonitConfig.snackbarInfo != null){
+                MonitConfig.snackbarInfo.dismiss();
+            }
+            MonitConfig.isUpdated = true;
             jsonRest = new JsonRest(this, true);
             jsonRest.execute();
         });
+        btUrl = (FloatingActionButton) parent.findViewById(R.id.bt_url);
 
-        btUrl = (Button) view.findViewById(R.id.bt_url);
         btUrl.setOnClickListener(v -> askUrl());
 
         return view;
@@ -46,7 +59,7 @@ public class GraphFragment extends Fragment {
 
     private void askUrl() {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setTitle("Enter the URL");
+        builder.setTitle("Enter the base URL");
 
         final EditText input = new EditText(getActivity());
 
@@ -54,7 +67,15 @@ public class GraphFragment extends Fragment {
         builder.setView(input);
 
         builder.setPositiveButton("OK", (dialog, which) -> {
-            String urlToJson = input.getText().toString();
+            String newUrl = input.getText().toString();
+            if (!newUrl.contains(HTTP_URL_INIT)) {
+                newUrl = HTTP_URL_INIT.concat(newUrl);
+            }
+            MonitConfig.setBaseUrl(newUrl);
+
+            jsonRest = new JsonRest(this, true);
+            jsonRest.execute();
+
         });
         builder.setNegativeButton("Cancel", (dialog, which) -> {
             dialog.cancel();
@@ -63,12 +84,36 @@ public class GraphFragment extends Fragment {
         builder.show();
     }
 
-    public void refreshGraph(List<Coordinate> data) {
+    private void refreshGraph(List<Coordinate> data) {
+        if (MonitConfig.isAutoRefresh()){
+            this.asyncGraph = new AsyncGraph(this);
+            asyncGraph.start();
+        }else{
+            asyncGraph.stop();
+        }
         monitGraph.refresh(data);
+
     }
 
-    public void setGraph(List<Coordinate> data) {
+    private void setGraph(List<Coordinate> data) {
         monitGraph = new MonitGraph(getView(), data);
         monitGraph.show();
+    }
+
+    @Override
+    public void showErrorMsg() {
+        MonitConfig.rollback();
+        Snackbar.make(parent,R.string.unknow_host,Snackbar.LENGTH_SHORT).show();
+        jsonRest = new JsonRest(this, true);
+        jsonRest.execute();
+    }
+
+    @Override
+    public void processFinish(List<Coordinate> coordinates, boolean refresh) {
+        if (refresh){
+            refreshGraph(coordinates);
+        }else{
+            setGraph(coordinates);
+        }
     }
 }
