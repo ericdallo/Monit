@@ -10,6 +10,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.monit.adapter.MainMenuAdapter;
+import com.monit.async.AsyncGraph;
 
 public class MonitActivity extends AppCompatActivity {
 
@@ -43,5 +44,19 @@ public class MonitActivity extends AppCompatActivity {
             return true;
         }
         return false;
+    }
+
+    @Override
+    protected void onPause() {
+        AsyncGraph.handler.removeCallbacksAndMessages(null);
+        super.onPause();
+    }
+
+    @Override
+    protected void onResume() {
+        if (AsyncGraph.isRunning){
+            AsyncGraph.comeback();
+        }
+        super.onResume();
     }
 }

@@ -1,4 +1,5 @@
 .gradle
+sendGraphite.sh
 /local.properties
 /.idea/workspace.xml
 /.idea/libraries

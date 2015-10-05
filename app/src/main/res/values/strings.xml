@@ -1,6 +1,13 @@
 <resources>
     <string name="app_name">Monit</string>
 
-    <string name="hello_world">Hello world!</string>
-    <string name="update_monit">Atualizar Gráfico</string>
+    <string name="unknow_host">Could not access the specified URL</string>
+    <string name="update_graph_msg">Update the graph to changes make effect</string>
+    <string name="error_label">Error</string>
+    <string name="refresh_time">Refresh time</string>
+    <string name="enable_auto">Enable Auto Refresh</string>
+    <string name="relative_time">Relative graph time</string>
+    <string name="title_preferences">Preferences</string>
+    <string name="graph_target">Graph target</string>
+    <string name="graph_target_parameter">Enter the graph target</string>
 </resources>
