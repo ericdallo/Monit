@@ -25,8 +25,10 @@ import java.util.List;
 public class GraphFragment extends Fragment implements AsyncResponse {
 
     public static final String HTTP_URL_INIT = "http://";
+    public static final int URL = 0;
+    public static final int TARGET = 1;
     private MonitGraph monitGraph;
-    private FloatingActionButton btUpdate, btUrl;
+    private FloatingActionButton btUpdate, btUrl, btTarget;
     private JsonRest jsonRest;
     private View parent;
     private AsyncGraph asyncGraph;
@@ -43,40 +45,57 @@ public class GraphFragment extends Fragment implements AsyncResponse {
 
         btUpdate = (FloatingActionButton) parent.findViewById(R.id.bt_update);
         btUpdate.setOnClickListener(v -> {
-            if(MonitConfig.snackbarInfo != null){
+            if (MonitConfig.snackbarInfo != null) {
                 MonitConfig.snackbarInfo.dismiss();
             }
             MonitConfig.isUpdated = true;
             jsonRest = new JsonRest(this, true);
             jsonRest.execute();
         });
-        btUrl = (FloatingActionButton) parent.findViewById(R.id.bt_url);
 
-        btUrl.setOnClickListener(v -> askUrl());
+        btUrl = (FloatingActionButton) parent.findViewById(R.id.bt_url);
+        btUrl.setOnClickListener(v -> ask(URL));
+
+        btTarget = (FloatingActionButton) parent.findViewById(R.id.bt_target);
+        btTarget.setOnClickListener(v -> ask(TARGET));
 
         return view;
     }
 
-    private void askUrl() {
+    private void ask(int option) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setTitle("Enter the base URL");
-
         final EditText input = new EditText(getActivity());
 
         input.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_URI);
         builder.setView(input);
 
-        builder.setPositiveButton("OK", (dialog, which) -> {
-            String newUrl = input.getText().toString();
-            if (!newUrl.contains(HTTP_URL_INIT)) {
-                newUrl = HTTP_URL_INIT.concat(newUrl);
-            }
-            MonitConfig.setBaseUrl(newUrl);
+        switch (option){
+            case URL:
+                builder.setTitle("Enter the URL");
+                builder.setPositiveButton("OK", (dialog, which) -> {
+                    String newUrl = input.getText().toString();
+                    if (!newUrl.contains(HTTP_URL_INIT)) {
+                        newUrl = HTTP_URL_INIT.concat(newUrl);
+                    }
+                    MonitConfig.setBaseUrl(newUrl);
+                    jsonRest = new JsonRest(this, true);
+                    jsonRest.execute();
 
-            jsonRest = new JsonRest(this, true);
-            jsonRest.execute();
+                });
+                break;
+            case TARGET:
+                builder.setTitle("Enter the graph target");
+                builder.setPositiveButton("OK", (dialog, which) -> {
+                    String target = input.getText().toString();
 
-        });
+                    MonitConfig.setTarget(target);
+                    jsonRest = new JsonRest(this, true);
+                    jsonRest.execute();
+
+                });
+                break;
+        }
+
         builder.setNegativeButton("Cancel", (dialog, which) -> {
             dialog.cancel();
         });

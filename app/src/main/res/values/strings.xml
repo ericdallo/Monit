@@ -8,6 +8,6 @@
     <string name="enable_auto">Enable Auto Refresh</string>
     <string name="relative_time">Relative graph time</string>
     <string name="title_preferences">Preferences</string>
-    <string name="graph_target">Graph target</string>
+    <string name="add_graph_target">Add new target</string>
     <string name="graph_target_parameter">Enter the graph target</string>
 </resources>

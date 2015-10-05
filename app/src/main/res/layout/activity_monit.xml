@@ -22,7 +22,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|left"
         android:layout_marginBottom="12dp"
-        android:layout_marginRight="12dp"
+        android:layout_marginLeft="12dp"
         android:src="@drawable/fab_refresh"
         app:fab_colorNormal="@color/ColorPrimary"
         app:fab_colorPressed="@color/ColorPrimary"
@@ -39,19 +39,18 @@
         android:layout_marginBottom="12dp"
         android:layout_marginRight="12dp"
         android:src="@drawable/fab_ic_add"
-        app:fab_colorNormal="@color/ColorPrimary"
-        app:fab_colorPressed="@color/ColorPrimary"
-        app:fab_colorRipple="#99FFFFFF"
-        app:fab_hideAnimation="@anim/fab_scale_down"
-        app:fab_showAnimation="@anim/fab_scale_up"
-        app:fab_showShadow="true"
-        app:layout_behavior="com.monit.layoutsbehavior.FloatingActionMenuBehavior">
+        app:layout_behavior="com.monit.layoutsbehavior.FloatingActionMenuBehavior"
+        app:menu_colorNormal="@color/ColorPrimary"
+        app:menu_colorPressed="@color/ColorPrimary"
+        app:menu_colorRipple="#99FFFFFF"
+        app:menu_showShadow="true">
 
         <com.github.clans.fab.FloatingActionButton
             android:id="@+id/bt_target"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:fab_label="Add url"
+            android:src="@drawable/fab_graph"
+            app:fab_label="change target"
             app:fab_size="mini" />
 
         <com.github.clans.fab.FloatingActionButton
@@ -59,7 +58,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@drawable/fab_edit"
-            app:fab_label="Add url"
+            app:fab_label="change url"
             app:fab_size="mini" />
     </com.github.clans.fab.FloatingActionMenu>
 

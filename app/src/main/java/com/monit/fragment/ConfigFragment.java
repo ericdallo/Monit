@@ -48,7 +48,7 @@ public class ConfigFragment extends Fragment {
         spinnerRelativeTime = createSpinner(fragmentView, R.id.spinner_relative_number, R.array.relative_time);
         spinnerRelativeType = createSpinner(fragmentView, R.id.spinner_relative_type, R.array.relative_type);
 
-        btGraphTarget = (Button) fragmentView.findViewById(R.id.bt_graph_target);
+        btGraphTarget = (Button) fragmentView.findViewById(R.id.bt_add_target);
         btGraphTarget.setOnClickListener(v -> askTarget());
 
         return fragmentView;
@@ -85,7 +85,7 @@ public class ConfigFragment extends Fragment {
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                if(spinnerCount > 3){
+                if(spinnerCount > 2){
                     updateRefreshTime(spinnerRefreshTime.getSelectedItem().toString());
 
                     String itemType = spinnerRelativeType.getSelectedItem().toString();
@@ -114,6 +114,7 @@ public class ConfigFragment extends Fragment {
 
     private void updateRefreshTime(String item) {
         String[] splitNumber = item.split("\\W[a-z]+");
+
         String[] splitTime = item.split("[0-9]+\\W");
 
         String number = Util.getStringFromArray(splitNumber);

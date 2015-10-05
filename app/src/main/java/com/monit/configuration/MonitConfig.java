@@ -10,7 +10,8 @@ public class MonitConfig {
 
     private static String baseUrl = "http://54.68.38.254";
     private static String previousUrl = baseUrl;
-    private static String target = "summarize(stats.teste,'1min','avg')";
+    private static String target = "stats.teste";
+    private static String previousTarget = target;
     private static String format = "json";
     private static String fromTime = "30";
     private static String fromType = "min";
@@ -31,7 +32,7 @@ public class MonitConfig {
     }
 
     public static String getTarget() {
-        return target;
+        return "summarize("+ target + ",'5min','avg')";
     }
 
     public static String getFormat() {
@@ -44,6 +45,7 @@ public class MonitConfig {
 
     public static void rollback() {
         MonitConfig.baseUrl = MonitConfig.previousUrl;
+        MonitConfig.target = MonitConfig.previousTarget;
     }
 
     public static void setAutoRefresh(boolean isChecked) {
@@ -75,6 +77,9 @@ public class MonitConfig {
     }
 
     public static void setTarget(String target) {
+        MonitConfig.previousTarget = MonitConfig.target;
         MonitConfig.target = target;
+
+
     }
 }
